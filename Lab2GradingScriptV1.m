@@ -45,19 +45,21 @@ pythagorean_files = dir('**/Pythagorean_triad_problem_*.m'); % get all of the py
 
 for i = 1:length(animation_files) % for each animation file
     
-    results{i,1} = animation_files(i).name(21:24); % get last 4 of student ID
+    results{i,1} = str2num(animation_files(i).name(21:24)); % get last 4 of student ID
     
     try % try clause
         filename = animation_files(i).name; % get the filename
         filetext = fileread(filename); % store file in text
         save('gradingvars.mat'); % save grading script data and variables
         eval(filetext); % run file text as script
+        load('gradingvars.mat'); % re-load grading script data and variables 
+        close; % close figure
+        results{i,2} = input('Score? '); % enable user to enter score
+    catch ERROR % catch clause
+        close; % close figure
+        results{i,2} = 0; % give score of 0
         load('gradingvars.mat'); % re-load grading script data and variables
-        % pause; 
-        % enable user to enter score
-        % store score in scores array
-    catch % catch clause
-        % store the stack trace in scores
+        results{i,3} = ERROR.message; % store the stack trace in scores
     end % end try
 end % end for
 
