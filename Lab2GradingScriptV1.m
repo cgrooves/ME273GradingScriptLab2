@@ -50,7 +50,9 @@ for i = 1:length(animation_files) % for each animation file
     try % try clause
         filename = animation_files(i).name; % get the filename
         filetext = fileread(filename); % store file in text
+        save('gradingvars.mat'); % save grading script data and variables
         eval(filetext); % run file text as script
+        load('gradingvars.mat'); % re-load grading script data and variables
         % pause; 
         % enable user to enter score
         % store score in scores array
