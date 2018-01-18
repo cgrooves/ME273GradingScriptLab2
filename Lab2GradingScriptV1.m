@@ -21,7 +21,9 @@
 % 6. Total weighted score for Lab 2
 %
 %
-% NOTES: 
+% NOTES: Not robust yet - not able to catch, for example, if students enter
+% characters instead of the last 5 of their student ID after the required
+% filename.
 %
 %
 % VERSION HISTORY
@@ -45,43 +47,84 @@ pythagorean_files = dir('**/Pythagorean_triad_problem_*.m'); % get all of the py
 
 for i = 1:length(animation_files) % for each animation file
     
-    results{i,1} = str2num(animation_files(i).name(21:24)); % get last 4 of student ID
+    results{i,1} = str2num(animation_files(i).name(21:24)); % parse last 4 of student ID
     
     try % try clause
         filename = animation_files(i).name; % get the filename
         filetext = fileread(filename); % store file in text
         save('gradingvars.mat'); % save grading script data and variables
-        eval(filetext); % run file text as script
+        %eval(filetext); % run file text as script
         load('gradingvars.mat'); % re-load grading script data and variables 
-        close; % close figure
+        close; clc; % close figure and clear command line
         results{i,2} = input('Score? '); % enable user to enter score
+    
     catch ERROR % catch clause
-        close; % close figure
-        results{i,2} = 0; % give score of 0
+    
+        close; clc; % close figure
         load('gradingvars.mat'); % re-load grading script data and variables
+        results{i,2} = 0; % give score of 0
         results{i,3} = ERROR.message; % store the stack trace in scores
+    
     end % end try
+
 end % end for
 
 %% Pythagorean triangle problem
 
-% for each pythagorean triangle file
-    % get last 4 of student ID
-    % look for match in scores array
-        % if match found, use row index
-            % else add new row
-        % endif
-    % try clause
-        % run the current file
-        % test <solution>: a^2+b^2=c^2
-        % a + b + c = 1000
-        % a < b < c ?
-        % record score in scores array
-    % catch
+for i = 1:length(pythagorean_files) % for each pythagorean triangle file
+    
+    last4 = str2num(pythagorean_files(i).name(28:31)); % get last 4 of student ID
+    k = 0; % reset index
+    
+    clear solution; % clear solution variable
+    
+    for j = 1:size(results,1) % look for match in scores array
+        if results{j,1} == last4 
+            k = j; % if match found, use row index
+            break;
+        end
+    end
+    
+    if k == 0  % else add new row
+        k = size(results,1)+1;
+    end % endif
+        
+    try % try clause
+        filename = pythagorean_files(i).name; 
+        filetext = fileread(filename);
+        save('gradingvars.mat');
+        eval(filetext); % run the current file
+        load('gradingvars.mat');
+        
+        score = 0;
+        a = solution(1);
+        b = solution(2);
+        c = solution(3);
+        
+        if a^2 + b^2 == c^2 % test <solution>: a^2+b^2=c^2
+            score = score + 1;
+        end
+        
+        if a + b + c == 1000 % a + b + c = 1000
+            score = score + 1;
+        end
+        
+        if a <= b && b <= c % a < b < c ?
+            score = score + 1;
+        end
+        
+        results{k,4} = score; % record score in scores array
+        
+    catch ERROR % catch
+        
         % store the stack trace in scores array
-    % end try
-% end for
-% for each
+        load('gradingvars.mat'); % re-load grading script data and variables
+        results{k,4} = 0; % give score of 0
+        results{k,5} = ERROR.message; % store the stack trace in scores
+        
+    end% end try
+        
+end % end for
 
 %% Finalize
 
