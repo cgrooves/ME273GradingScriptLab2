@@ -128,7 +128,7 @@ for i = 1:length(pythagorean_files) % for each pythagorean triangle file
         
 end % end for
 
-%% Finalize
+%% Finalize Grading
 
 for i = 1:size(results,1) % for each row in the scores array
     % compute/store final lab 2 score in scores array
@@ -138,3 +138,26 @@ for i = 1:size(results,1) % for each row in the scores array
     results{i,6} = 0.5*(animation_score + pythag_score); % weighted score
     
 end % end for
+
+%% Append scores to roster for Learning Suite Upload
+
+roster = readtable('sampleroster.csv'); % read in the current roster
+students = table2cell(roster);
+
+% for each row in graded
+for i = 1:size(results,1)
+    for j = 1:size(students,1) % for each row in roster
+        % if the last 4 match
+        if results{i,1} == students{j,6}
+            % append the scores and errors to the roster table
+            students(j,7:11) = results(i,2:end);
+        end % end if
+    end % end for
+end % end for
+
+% export the roster as graded assignment, ready to submit
+graded = cell2table(students,'VariableNames',{'LastName','FirstName',...
+    'NetID','Email','BYUID','Last4','Animation','Error1','Pythagorean',...
+    'Error2','Score'}); % change cell array to table
+
+writetable(graded,'lab2graded.csv')
