@@ -128,6 +128,11 @@ end % end for
 
 %% Finalize
 
-% for each row in the scores array
+for i = 1:size(results,1) % for each row in the scores array
     % compute/store final lab 2 score in scores array
-% end for
+    animation_score = results{i,2}/10; 
+    pythag_score = results{i,4}/3;
+    
+    results{i,6} = 0.5*(animation_score + pythag_score); % weighted score
+    
+end % end for
