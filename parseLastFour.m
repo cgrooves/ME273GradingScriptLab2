@@ -30,7 +30,7 @@ function last4 = parseLastFour(filename)
        
         % check to see if letter is underscore
         if filename(i) == '_'
-            last4 = str2num(filename(i+1:i+3));
+            last4 = str2num(filename(i+1:i+4));
             return;
         end
     end

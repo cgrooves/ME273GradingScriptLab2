@@ -40,20 +40,22 @@ addpath(animation_path.name)
 pythagorean_path = dir('*_Pythagorean_triad_problem_*');
 addpath(pythagorean_path.name)
 
-animation_files = dir('**/Animation_plotting_*.m'); % get all the animation files
-pythagorean_files = dir('**/Pythagorean_triad_problem_*.m'); % get all of the pythagorean triangle files
+animation_files = dir('**/Animation_*.m'); % get all the animation files
+pythagorean_files = dir('**/Pythagorean_*.m'); % get all of the pythagorean triangle files
+
+results = {};
 
 %% Animation problem
 
 for i = 1:length(animation_files) % for each animation file
     
-    results{i,1} = str2num(animation_files(i).name(21:24)); % parse last 4 of student ID
+    results{i,1} = parseLastFour(animation_files(i).name); % parse last 4 of student ID
     
     try % try clause
         filename = animation_files(i).name; % get the filename
         filetext = fileread(filename); % store file in text
         save('gradingvars.mat'); % save grading script data and variables
-        %eval(filetext); % run file text as script
+%         eval(filetext); % run file text as script
         load('gradingvars.mat'); % re-load grading script data and variables 
         close; clc; % close figure and clear command line
         results{i,2} = input('Score? '); % enable user to enter score
@@ -73,7 +75,7 @@ end % end for
 
 for i = 1:length(pythagorean_files) % for each pythagorean triangle file
     
-    last4 = str2num(pythagorean_files(i).name(28:31)); % get last 4 of student ID
+    last4 = parseLastFour(pythagorean_files(i).name); % get last 4 of student ID
     k = 0; % reset index
     
     clear solution; % clear solution variable
