@@ -24,6 +24,8 @@
 % NOTES: Not robust yet - not able to catch, for example, if students enter
 % characters instead of the last 5 of their student ID after the required
 % filename.
+% Next time, check specifically for Nathan Woolley's Pythag grade; it
+% seems like it should have worked but the auto-grader didn't like it.
 %
 %
 % VERSION HISTORY
@@ -34,18 +36,15 @@
 %--------------------------------------------------------------
 clc; clear; close; % clear environment
 
-% add file folders to path
-animation_path = dir('*_Animation_plotting_*');
-addpath(animation_path.name)
-pythagorean_path = dir('*_Pythagorean_triad_problem_*');
-addpath(pythagorean_path.name)
-
-animation_files = dir('**/Animation_*.m'); % get all the animation files
-pythagorean_files = dir('**/Pythagorean_*.m'); % get all of the pythagorean triangle files
-
 results = {};
 
 %% Animation problem
+
+% add file folders to path
+animation_path = dir('*Animation*');
+addpath(animation_path.name)
+
+animation_files = dir(strcat(animation_path.name,'/*.m')); % get all the animation files
 
 for i = 1:length(animation_files) % for each animation file
     
@@ -71,7 +70,15 @@ for i = 1:length(animation_files) % for each animation file
 
 end % end for
 
+restoredefaultpath; % restore default path
+
 %% Pythagorean triangle problem
+
+% add pythag folder to path
+pythagorean_path = dir('*Pythag*');
+addpath(pythagorean_path.name)
+
+pythagorean_files = dir(strcat(pythagorean_path.name,'/*.m')); % get all of the pythagorean triangle files
 
 for i = 1:length(pythagorean_files) % for each pythagorean triangle file
     
@@ -141,16 +148,18 @@ end % end for
 
 %% Append scores to roster for Learning Suite Upload
 
-roster = readtable('sampleroster.csv'); % read in the current roster
+roster = readtable('roster.csv'); % read in the current roster
 students = table2cell(roster);
+
+numCols = size(students,2);
 
 % for each row in graded
 for i = 1:size(results,1)
     for j = 1:size(students,1) % for each row in roster
         % if the last 4 match
-        if results{i,1} == students{j,6}
+        if results{i,1} == students{j,numCols}
             % append the scores and errors to the roster table
-            students(j,7:11) = results(i,2:end);
+            students(j,numCols+1:(numCols+5)) = results(i,2:end);
         end % end if
     end % end for
 end % end for
