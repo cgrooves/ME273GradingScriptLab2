@@ -16,12 +16,6 @@
 %
 % NOTES: 
 %
-%
-% VERSION HISTORY
-% V1 - Initial release: verified to work with properly formatted filenames.
-% V2 - 
-% V3 - 
-% 
 %--------------------------------------------------------------
 function last4 = parseLastFour(filename)
 
