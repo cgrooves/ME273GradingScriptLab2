@@ -1,4 +1,4 @@
-function [] = processFiles(studentDatabase,files,masterAssignment,gradingFunction)
+function processFiles(studentDatabase,files,masterAssignment,gradingFunction)
 
     % for each animation file
     for i = 1:length(files)
@@ -50,15 +50,16 @@ function [] = processFiles(studentDatabase,files,masterAssignment,gradingFunctio
                 % increment occurrences and grade file
                 assignment.addOccurrence(file);
                 
-                [score, feedback] = run(gradingFunction);
+                % grade file
+                eval(['[score, fileFeedback] = ',gradingFunction(1:end-2),'(file);']);
                 
                 % update database
                 assignment.pointsEarned = score;
-                assignment.feedback = feedback;
-                                
+                assignment.feedback = fileFeedback;
+                
             end
         end
     end
-
+    
 end
 
