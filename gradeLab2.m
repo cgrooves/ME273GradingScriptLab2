@@ -18,17 +18,23 @@
 %--------------------------------------------------------------
 
 function gradeLab2
-
-    % get list of files submitted
-    animationFiles = prepareFiles('Animation');
-    pythagFiles = prepareFiles('Pythag');
     
     % setup 
     animation = Assignment('Animation','22-Jan-2018 16:00:00');
     animation.pointsPossible = 10;
+    animationFiles = prepareFiles(animation.name);
+    
+    pythag = Assignment('Pythag','22-Jan-2018 16:00:00');
+    pythagFiles = prepareFiles(pythag.name);
+    pythag.pointsPossible = 3;
     
     % get roster
-    load('students.mat','students')
+    try
+        load('students.mat','students');
+    catch
+        createStudentDatabase('roster.csv','students.mat');
+        load('students.mat','students');
+    end
     
     % Animation-----------------
     % for each animation file
@@ -60,7 +66,7 @@ function gradeLab2
                             gradeFile = false;
                             break;
                         else
-                            assignment = students(j).assignments{k}; % keep reference to assignment
+                            assignment = students{j}.assignments{k}; % keep reference to assignment
                         end
                         
                         
@@ -80,8 +86,24 @@ function gradeLab2
                 
                 % increment occurrences and grade file
                 assignment.addOccurrence(file);
-                % grade file
                 
+                % grade file
+                try % try clause
+                    save('gradingvars.mat'); % save grading script data and variables
+                    run(file.name); % run file text as script
+                    load('gradingvars.mat'); % re-load grading script data and variables 
+                    close; clc; % close figure and clear command line
+                    assignment.pointsEarned = input('Score? '); % enable user to enter score
+
+                catch ERROR % catch clause
+
+                    close; clc; % close figure
+                    load('gradingvars.mat'); % re-load grading script data and variables
+                    assignment.pointsEarned = 0; % give score of 0
+                    assignment.feedback = ERROR.message; % store the stack trace in scores
+
+                end % end try
+                                
             end
         end
     end
