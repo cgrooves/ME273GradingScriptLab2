@@ -2,12 +2,13 @@ classdef Assignment < handle
     
     properties
         name
+        dueDate
         occurrences
         file
-        pointsPossible
-        pointsEarned
+        
+        lateWeight
+        codeScore
         feedback
-        dueDate
     end
     
     methods
@@ -17,6 +18,8 @@ classdef Assignment < handle
             self.name = name;
             self.dueDate = dueDate;
             self.occurrences = 0;
+            self.lateWeight = 1.0;
+            self.feedback = '';
             
         end
         %--------------------------------------------
@@ -27,6 +30,49 @@ classdef Assignment < handle
         
         end
         %--------------------------------------------
+        function totalScore = computeScore(self)
+            
+            totalScore = self.lateWeight*self.codeScore;
+            
+        end
+        %---------------------------------------------
+        function displayFeedback = totalFeedback(self)
+            
+            c = {};
+            c{1} = self.name;
+            c{2} = '\n\n';
+            c{3} = 'Code Score:';
+            c{4} = num2str(self.codeScore);
+            c{5} = '\n';
+            c{6} = 'Feedback:';
+            c{7} = self.feedback;
+            
+            displayFeedback = strjoin(c);
+            
+        end
+        %----------------------------------------------
+        function lateWeight = computeLateWeight(self,sectionNo)
+            
+            % get difference (in hours) between dueDate and submission time
+            adjustedDate = self.dueDate + sectionNo - 1; % adjust for section number
+            d = self.file.date - adjustedDate;
+            
+            if d > duration(96,0,0)
+                lateWeight = 0;
+            elseif d > duration(72,0,0)
+                lateWeight = 0.2;
+            elseif d > duration(48,0,0)
+                lateWeight = 0.4;
+            elseif d > duration(24,0,0)
+                lateWeight = 0.6;
+            elseif d > duration(0,0,0)
+                lateWeight = 0.8;
+            else
+                lateWeight = 1;
+            end
+            
+        end
+        %----------------------------------------------
         
     end
     

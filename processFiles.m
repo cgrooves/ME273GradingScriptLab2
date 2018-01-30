@@ -54,8 +54,9 @@ function processFiles(studentDatabase,files,masterAssignment,gradingFunction)
                 eval(['[score, fileFeedback] = ',gradingFunction(1:end-2),'(file);']);
                 
                 % update database
-                assignment.pointsEarned = score;
+                assignment.score = score;
                 assignment.feedback = fileFeedback;
+                
                 
             end
         end

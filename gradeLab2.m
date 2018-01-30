@@ -1,5 +1,5 @@
 %--------------------------------------------------------------
-% FILE: Lab2GradingScript.m
+% FILE: gradeLab2.m
 % AUTHOR: Caleb Groves
 % DATE: 1/16/18
 % 
