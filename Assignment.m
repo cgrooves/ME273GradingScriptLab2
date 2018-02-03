@@ -6,7 +6,6 @@ classdef Assignment < handle
         occurrences
         file
         
-        lateWeight
         codeScore
         feedback
     end
@@ -18,7 +17,6 @@ classdef Assignment < handle
             self.name = name;
             self.dueDate = dueDate;
             self.occurrences = 0;
-            self.lateWeight = 1.0;
             self.feedback = '';
             
         end
@@ -30,9 +28,9 @@ classdef Assignment < handle
         
         end
         %--------------------------------------------
-        function totalScore = computeScore(self)
+        function totalScore = computeScore(self,section)
             
-            totalScore = self.lateWeight*self.codeScore;
+            totalScore = self.lateWeight(section)*self.codeScore;
             
         end
         %---------------------------------------------
@@ -40,11 +38,11 @@ classdef Assignment < handle
             
             c = {};
             c{1} = self.name;
-            c{2} = '\n\n';
-            c{3} = 'Code Score:';
-            c{4} = num2str(self.codeScore);
-            c{5} = '\n';
-            c{6} = 'Feedback:';
+            c{2} = ': ';
+            c{3} = ' Code Score: ';
+            c{4} = num2str(self.codeScore*100);
+            c{5} = ' %. ';
+            c{6} = ' Feedback: ';
             c{7} = self.feedback;
             
             displayFeedback = strjoin(c);

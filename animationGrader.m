@@ -8,13 +8,14 @@ function [score, fileFeedback] = animationGrader(file)
         close; clc; % close figure and clear command line
         score = input('Score? '); % enable user to enter score
         fileFeedback = '';
+        score = score/10;
     
     catch ERROR % catch clause
     
         close; clc; % close figure
         load('gradingvars.mat'); % re-load grading script data and variables
         score = 0; % give score of 0
-        fileFeedback = ERROR.message; % store the stack trace in scores
+        fileFeedback = ERROR.getReport; % store the stack trace in scores
     
     end % end try
 

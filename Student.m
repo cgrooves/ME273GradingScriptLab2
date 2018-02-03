@@ -21,12 +21,6 @@ classdef Student < handle
             self.assignments{end+1} = Assignment(name,dueDate);
         end
         %--------------------------------------------
-        function late = computeLateWeight(self)
-            
-            
-            
-        end
-        %--------------------------------------------
     end
     
 end

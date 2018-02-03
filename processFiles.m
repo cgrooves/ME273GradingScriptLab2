@@ -19,7 +19,7 @@ function processFiles(studentDatabase,files,masterAssignment,gradingFunction)
                 for k = 1:length(studentDatabase{j}.assignments)
                     
                     % check for filename match
-                    if studentDatabase{j}.assignments{k}.name == masterAssignment.name
+                    if strcmp(studentDatabase{j}.assignments{k}.name,masterAssignment.name)
                         
                         fileFound = true;
                         
@@ -54,9 +54,10 @@ function processFiles(studentDatabase,files,masterAssignment,gradingFunction)
                 eval(['[score, fileFeedback] = ',gradingFunction(1:end-2),'(file);']);
                 
                 % update database
-                assignment.score = score;
+                assignment.codeScore = score;
                 assignment.feedback = fileFeedback;
                 
+                % add to output cell array
                 
             end
         end
